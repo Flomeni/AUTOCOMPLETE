@@ -61,7 +61,7 @@ const exports_obj = {
 };
 
 if (env.production) {
-    Object.assign(exports, {
+    Object.assign(exports_obj, {
         optimization: {
             splitChunks: {
               chunks: 'all',
@@ -69,7 +69,7 @@ if (env.production) {
         }
     });
 } else {
-    Object.assign(exports, {
+    Object.assign(exports_obj, {
         devtool: 'inline-source-map',
         devServer: {
             contentBase: './dist',

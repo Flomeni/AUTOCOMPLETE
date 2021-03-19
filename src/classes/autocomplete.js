@@ -1,3 +1,8 @@
+import './autocomplete.css';
+
+const AUTOCOMPLETE_CONTAINER = 'autocomplete-container';
+const AUTOCOMPLETE_ITEM = 'autocomplete-container__item';
+
 export class Autocomplete {
 
     static DEFAULT_MIN_LENGTH = 3;
@@ -42,10 +47,12 @@ export class Autocomplete {
     /**
      * Emitter that is called when autocomplete item has been selected.
      * @publicapi
+     * 
      * @emits Interface {
      *     selectedItem: Element;
      *     value: any;
      * }
+     * @param {Function} - Callback function
      * @returns {void} 
      */
     onClick(cb) {
@@ -57,11 +64,20 @@ export class Autocomplete {
 
     _init(selector) {
         this._subscribeToInputChanges(selector);
+        this._handleOutsideClicks();
+    }
+
+    _handleOutsideClicks() {
+        document.addEventListener('click', (e) => {    
+            if (this._container && !this._container.contains(e.target)) {
+                this._clearContainer();
+            }
+        });
     }
 
     /**
      * 
-     * @param {Element} selector 
+     * @param {Element} selector - autocomplete input element. 
      */
     _subscribeToInputChanges(selector) {
         const cb = async (e) => {
@@ -86,13 +102,15 @@ export class Autocomplete {
 
     /**
      * 
-     * @param {Array} data 
+     * @param {Array} data - array of values to be rendered.
+     * 
      */
     _renderSuggestions(data, selector) {
         this._clearContainer();
 
         if (!this._container) {
             this._container = document.createElement('ul');
+            this._container.classList.add(AUTOCOMPLETE_CONTAINER);
         }
 
         
@@ -100,6 +118,7 @@ export class Autocomplete {
 
         const renderItem = item => {
             const li = document.createElement('li');
+            li.classList.add(AUTOCOMPLETE_ITEM);
             li.innerHTML = item;
             li.dataset['autocompleteItem'] = true;
             li.dataset['value'] = item;
